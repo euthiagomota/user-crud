@@ -1,19 +1,21 @@
 package com.br.usermanager.user.interfaces;
 
-import com.br.usermanager.user.model.User;
+import com.br.usermanager.user.dto.request.CreateUserRequestDTO;
+import com.br.usermanager.user.dto.request.UpdateUserRequestDTO;
+import com.br.usermanager.user.dto.response.UserResponseDTO;
 
 import java.util.List;
 import java.util.UUID;
 
 public interface UserService {
 
-    User registerUser(String name, String email, String password);
+    UserResponseDTO registerUser(CreateUserRequestDTO request);
 
-    User updateUser(UUID id, String name, String email, String password);
+    UserResponseDTO updateUser(UUID id, UpdateUserRequestDTO request);
 
     void deleteUser(UUID id);
 
-    User getUserById(UUID id);
+    UserResponseDTO getUserById(UUID id);
 
-    List<User> getAllUsers();
+    List<UserResponseDTO> getAllUsers();
 }
