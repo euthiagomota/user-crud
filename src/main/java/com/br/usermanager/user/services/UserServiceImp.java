@@ -1,9 +1,12 @@
 package com.br.usermanager.user.services;
 
+import com.br.usermanager.user.dto.request.CreateUserRequestDTO;
+import com.br.usermanager.user.dto.request.UpdateUserRequestDTO;
+import com.br.usermanager.user.dto.response.UserResponseDTO;
 import com.br.usermanager.user.interfaces.UserService;
 import com.br.usermanager.user.model.User;
 import com.br.usermanager.user.repositories.UserRepository;
-import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
@@ -12,57 +15,67 @@ import java.util.UUID;
 @Service
 public class UserServiceImp implements UserService {
 
-    @Autowired
-    private UserRepository userRepository;
+    private final UserRepository userRepository;
+    private final BCryptPasswordEncoder passwordEncoder;
 
-    @Override
-    public User registerUser(String name, String email, String password) {
-
-        // 1. validação básica
-        if (name == null || email == null || password == null) {
-            throw new RuntimeException("Dados inválidos");
-        }
-
-        // 2. VERIFICAR SE EMAIL JÁ EXISTE
-        if (userRepository.existsByEmail(email)) {
-            throw new RuntimeException("Email já cadastrado");
-        }
-
-        // 3. criar usuário
-        User user = new User();
-        user.setName(name);
-        user.setEmail(email);
-        user.setPassword(password);
-
-        // 4. salvar no banco
-        return userRepository.save(user);
+    public UserServiceImp(UserRepository userRepository) {
+        this.userRepository = userRepository;
+        this.passwordEncoder = new BCryptPasswordEncoder();
     }
 
     @Override
-    public User updateUser(UUID id, String name, String email, String password) {
+    public UserResponseDTO registerUser(CreateUserRequestDTO request) {
 
-        User user = getUserById(id);
+        if (userRepository.existsByEmail(request.email())) {
+            throw new RuntimeException("Email já cadastrado");
+        }
 
-        user.setName(name);
-        user.setEmail(email);
-        user.setPassword(password);
+        User user = new User();
+        user.setName(request.name());
+        user.setEmail(request.email());
+        user.setPassword(passwordEncoder.encode(request.password()));
 
-        return userRepository.save(user);
+        return UserResponseDTO.fromEntity(userRepository.save(user));
+    }
+
+    @Override
+    public UserResponseDTO updateUser(UUID id, UpdateUserRequestDTO request) {
+
+        User user = findUserById(id);
+
+        if (!user.getEmail().equals(request.email()) &&
+                userRepository.existsByEmail(request.email())) {
+            throw new RuntimeException("Email já cadastrado");
+        }
+
+        user.setName(request.name());
+        user.setEmail(request.email());
+        user.setPassword(passwordEncoder.encode(request.password()));
+
+        return UserResponseDTO.fromEntity(userRepository.save(user));
     }
 
     @Override
     public void deleteUser(UUID id) {
-        userRepository.deleteById(id);
+        User user = findUserById(id);
+        userRepository.delete(user);
     }
 
     @Override
-    public User getUserById(UUID id) {
+    public UserResponseDTO getUserById(UUID id) {
+        return UserResponseDTO.fromEntity(findUserById(id));
+    }
+
+    @Override
+    public List<UserResponseDTO> getAllUsers() {
+        return userRepository.findAll()
+                .stream()
+                .map(UserResponseDTO::fromEntity)
+                .toList();
+    }
+
+    private User findUserById(UUID id) {
         return userRepository.findById(id)
                 .orElseThrow(() -> new RuntimeException("Usuário não encontrado"));
-    }
-
-    @Override
-    public List<User> getAllUsers() {
-        return userRepository.findAll();
     }
 }
