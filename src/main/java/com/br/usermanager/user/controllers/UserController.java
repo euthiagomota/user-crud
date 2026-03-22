@@ -5,6 +5,7 @@ import com.br.usermanager.user.dto.request.UpdateUserRequestDTO;
 import com.br.usermanager.user.dto.response.UserResponseDTO;
 import com.br.usermanager.user.interfaces.UserService;
 import jakarta.validation.Valid;
+import org.springframework.data.domain.Page;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
@@ -21,6 +22,13 @@ public class UserController {
         this.userService = userService;
     }
 
+    @PostMapping("/batch")
+    public ResponseEntity<List<UserResponseDTO>> createUsers(
+            @RequestBody List<@Valid CreateUserRequestDTO> requests
+    ) {
+        return ResponseEntity.status(201).body(userService.registerUsers(requests));
+    }
+
     // CREATE
     @PostMapping
     public ResponseEntity<UserResponseDTO> createUser(
@@ -33,8 +41,11 @@ public class UserController {
 
     // READ ALL
     @GetMapping
-    public ResponseEntity<List<UserResponseDTO>> getAllUsers() {
-        return ResponseEntity.ok(userService.getAllUsers());
+    public ResponseEntity<Page<UserResponseDTO>> getAllUsers(
+            @RequestParam(defaultValue = "0") int page,
+            @RequestParam(defaultValue = "10") int size
+    ) {
+        return ResponseEntity.ok(userService.getAllUsers(page, size));
     }
 
     // READ BY ID

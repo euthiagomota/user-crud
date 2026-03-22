@@ -6,6 +6,9 @@ import com.br.usermanager.user.dto.response.UserResponseDTO;
 import com.br.usermanager.user.interfaces.UserService;
 import com.br.usermanager.user.model.User;
 import com.br.usermanager.user.repositories.UserRepository;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.stereotype.Service;
 
@@ -39,6 +42,22 @@ public class UserServiceImp implements UserService {
     }
 
     @Override
+    public List<UserResponseDTO> registerUsers(List<CreateUserRequestDTO> requests) {
+        return requests.stream().map(request -> {
+            if (userRepository.existsByEmail(request.email())) {
+                throw new RuntimeException("Email já cadastrado: " + request.email());
+            }
+
+            User user = new User();
+            user.setName(request.name());
+            user.setEmail(request.email());
+            user.setPassword(passwordEncoder.encode(request.password()));
+
+            return UserResponseDTO.fromEntity(userRepository.save(user));
+        }).toList();
+    }
+
+    @Override
     public UserResponseDTO updateUser(UUID id, UpdateUserRequestDTO request) {
 
         User user = findUserById(id);
@@ -67,11 +86,10 @@ public class UserServiceImp implements UserService {
     }
 
     @Override
-    public List<UserResponseDTO> getAllUsers() {
-        return userRepository.findAll()
-                .stream()
-                .map(UserResponseDTO::fromEntity)
-                .toList();
+    public Page<UserResponseDTO> getAllUsers(int page, int size) {
+        Pageable pageable = PageRequest.of(page, size);
+        return userRepository.findAll(pageable)
+                .map(UserResponseDTO::fromEntity);
     }
 
     private User findUserById(UUID id) {
