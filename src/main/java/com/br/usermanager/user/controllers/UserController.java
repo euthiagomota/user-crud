@@ -7,6 +7,9 @@ import com.br.usermanager.user.dto.request.LoginDTO;
 import com.br.usermanager.user.interfaces.UserService;
 import jakarta.validation.Valid;
 import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
+import org.springframework.data.web.PageableDefault;
+import org.springframework.data.domain.Sort;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
@@ -49,10 +52,11 @@ public class UserController {
     // READ ALL
     @GetMapping
     public ResponseEntity<Page<UserResponseDTO>> getAllUsers(
-            @RequestParam(defaultValue = "0") int page,
-            @RequestParam(defaultValue = "10") int size
+            @RequestParam(defaultValue = "") String name,
+            @RequestParam(defaultValue = "") String email,
+            @PageableDefault(sort = "name", direction = Sort.Direction.ASC) Pageable pageable
     ) {
-        return ResponseEntity.ok(userService.getAllUsers(page, size));
+        return ResponseEntity.ok(userService.getAllUsers(name, email, pageable));
     }
 
     // READ BY ID
@@ -76,10 +80,4 @@ public class UserController {
         userService.deleteUser(id);
         return ResponseEntity.noContent().build();
     }
-
-    // TEST - criar usuário de teste
-//    @PostMapping("/test-create")
-//    public ResponseEntity<String> createTestUser(@Valid @RequestBody LoginDTO request) {
-//        return ResponseEntity.status(201).body(userService.createTestUser(request));
-//    }
 }
