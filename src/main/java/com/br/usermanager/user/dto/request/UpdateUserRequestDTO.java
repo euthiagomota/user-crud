@@ -14,8 +14,7 @@ public record UpdateUserRequestDTO(
         @Size(max = 255, message = "Email deve ter no maximo 255 caracteres")
         String email,
 
-        @NotBlank(message = "Senha e obrigatoria")
-        @Size(min = 8, max = 100, message = "Senha deve ter entre 8 e 100 caracteres")
+        @Size(max = 100, message = "Senha deve ter no maximo 100 caracteres")
         String password
 ) {
 }
