@@ -32,7 +32,7 @@ public class UserServiceImp implements UserService {
         User user = userRepository.findByEmail(dto.email())
                 .orElseThrow(() -> new RuntimeException("Usuário não encontrado"));
 
-        if (!passwordEncoder.matches(dto.senha(), user.getPassword())) {
+        if (!passwordEncoder.matches(dto.password(), user.getPassword())) {
             throw new RuntimeException("Credenciais inválidas");
         }
 
@@ -109,20 +109,18 @@ public class UserServiceImp implements UserService {
         return userRepository.findById(id)
                 .orElseThrow(() -> new RuntimeException("Usuário não encontrado"));
     }
-//
-//    @Override
-//    public String createTestUser(LoginDTO dto) {
-//        if (userRepository.existsByEmail(dto.email())) {
-//            return "Usuario com este email ja existe";
-//        }
-//
-//        User user = new User();
-//        user.setName("Teste");
-//        user.setEmail(dto.email());
-//        user.setPassword(passwordEncoder.encode(dto.senha()));
-//
-//        userRepository.save(user);
-//
-//        return "Usuário criado com sucesso";
-//    }
+    public String createTestUser(LoginDTO dto) {
+        if (userRepository.existsByEmail(dto.email())) {
+            return "Usuario com este email ja existe";
+        }
+
+        User user = new User();
+        user.setName("Teste");
+        user.setEmail(dto.email());
+        user.setPassword(passwordEncoder.encode(dto.password()));
+
+        userRepository.save(user);
+
+        return "Usuário criado com sucesso";
+    }
 }

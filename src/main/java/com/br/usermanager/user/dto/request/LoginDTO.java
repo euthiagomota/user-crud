@@ -8,8 +8,8 @@ public record LoginDTO(
         @Email(message = "Email invalido")
         String email,
 
-        @NotBlank(message = "Senha e obrigatoria")
-        String senha
+        @NotBlank(message = "Senha e obrigatorio")
+        String password
 ) {
 }
 

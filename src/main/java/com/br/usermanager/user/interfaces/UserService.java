@@ -25,5 +25,4 @@ public interface UserService {
 
     Page<UserResponseDTO> getAllUsers(int page, int size);
 
-//    String createTestUser(LoginDTO dto);
 }
