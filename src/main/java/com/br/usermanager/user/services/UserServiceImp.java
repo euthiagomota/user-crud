@@ -3,6 +3,7 @@ package com.br.usermanager.user.services;
 import com.br.usermanager.user.dto.request.CreateUserRequestDTO;
 import com.br.usermanager.user.dto.request.UpdateUserRequestDTO;
 import com.br.usermanager.user.dto.response.UserResponseDTO;
+import com.br.usermanager.user.dto.request.LoginDTO;
 import com.br.usermanager.user.interfaces.UserService;
 import com.br.usermanager.user.model.User;
 import com.br.usermanager.user.repositories.UserRepository;
@@ -24,6 +25,18 @@ public class UserServiceImp implements UserService {
     public UserServiceImp(UserRepository userRepository) {
         this.userRepository = userRepository;
         this.passwordEncoder = new BCryptPasswordEncoder();
+    }
+
+    @Override
+    public String login(LoginDTO dto) {
+        User user = userRepository.findByEmail(dto.email())
+                .orElseThrow(() -> new RuntimeException("Usuário não encontrado"));
+
+        if (!passwordEncoder.matches(dto.senha(), user.getPassword())) {
+            throw new RuntimeException("Credenciais inválidas");
+        }
+
+        return "Login realizado com sucesso";
     }
 
     @Override
@@ -96,4 +109,20 @@ public class UserServiceImp implements UserService {
         return userRepository.findById(id)
                 .orElseThrow(() -> new RuntimeException("Usuário não encontrado"));
     }
+//
+//    @Override
+//    public String createTestUser(LoginDTO dto) {
+//        if (userRepository.existsByEmail(dto.email())) {
+//            return "Usuario com este email ja existe";
+//        }
+//
+//        User user = new User();
+//        user.setName("Teste");
+//        user.setEmail(dto.email());
+//        user.setPassword(passwordEncoder.encode(dto.senha()));
+//
+//        userRepository.save(user);
+//
+//        return "Usuário criado com sucesso";
+//    }
 }
