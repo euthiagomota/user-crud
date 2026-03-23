@@ -5,6 +5,7 @@ import com.br.usermanager.user.dto.request.UpdateUserRequestDTO;
 import com.br.usermanager.user.dto.response.UserResponseDTO;
 import com.br.usermanager.user.dto.request.LoginDTO;
 import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 
 import java.util.List;
 import java.util.UUID;
@@ -23,6 +24,6 @@ public interface UserService {
 
     UserResponseDTO getUserById(UUID id);
 
-    Page<UserResponseDTO> getAllUsers(int page, int size);
+    Page<UserResponseDTO> getAllUsers(String name, String email, Pageable pageable);
 
 }
