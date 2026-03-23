@@ -3,6 +3,7 @@ package com.br.usermanager.user.controllers;
 import com.br.usermanager.user.dto.request.CreateUserRequestDTO;
 import com.br.usermanager.user.dto.request.UpdateUserRequestDTO;
 import com.br.usermanager.user.dto.response.UserResponseDTO;
+import com.br.usermanager.user.dto.request.LoginDTO;
 import com.br.usermanager.user.interfaces.UserService;
 import jakarta.validation.Valid;
 import org.springframework.data.domain.Page;
@@ -20,6 +21,12 @@ public class UserController {
 
     public UserController(UserService userService) {
         this.userService = userService;
+    }
+
+    // LOGIN
+    @PostMapping("/login")
+    public ResponseEntity<String> login(@Valid @RequestBody LoginDTO request) {
+        return ResponseEntity.ok(userService.login(request));
     }
 
     @PostMapping("/batch")
@@ -69,4 +76,10 @@ public class UserController {
         userService.deleteUser(id);
         return ResponseEntity.noContent().build();
     }
+
+    // TEST - criar usuário de teste
+//    @PostMapping("/test-create")
+//    public ResponseEntity<String> createTestUser(@Valid @RequestBody LoginDTO request) {
+//        return ResponseEntity.status(201).body(userService.createTestUser(request));
+//    }
 }
