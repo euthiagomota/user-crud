@@ -35,3 +35,23 @@ out/
 
 ### VS Code ###
 .vscode/
+
+# === Docker volumes / dados ===
+volumes/
+**/db_data/
+**/pg_wal/
+**/pgdata/
+
+# === Node ===
+node_modules/
+
+# === Java / Gradle ===
+build/
+.gradle/
+
+# === IDE ===
+.vscode/
+.idea/
+
+# === Logs ===
+*.log
