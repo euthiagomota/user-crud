@@ -1,0 +1,126 @@
+/* Cadastro.module.css */
+
+.wrapper {
+  display: flex;
+  flex: 1; /* Ocupa todo o espaço abaixo da navbar */
+  justify-content: center; /* Centraliza horizontal */
+  align-items: center;     /* Centraliza vertical */
+  width: 100%;
+}
+
+/* 2. O Cartão de Cadastro */
+.card {
+  background-color: #161b22; /* Fundo levemente mais claro que o body */
+  padding: 2.5rem 2rem;
+  border-radius: 12px;
+  border: 1px solid #30363d;
+  width: 100%;
+  max-width: 420px; /* Um pouco mais largo para acomodar a política de senha */
+  box-shadow: 0 10px 30px rgba(0,0,0,0.5);
+  animation: fadeIn 0.4s ease-out;
+}
+
+@keyframes fadeIn {
+  from { opacity: 0; transform: translateY(-10px); }
+  to { opacity: 1; transform: translateY(0); }
+}
+
+.title {
+  color: #f0f6fc;
+  text-align: center;
+  margin-bottom: 2rem;
+  font-size: 1.6rem;
+  font-weight: 600;
+}
+
+/* 3. Campos de Entrada */
+.field {
+  margin-bottom: 1.2rem;
+  text-align: left; /* Garante que labels e textos fiquem à esquerda */
+}
+
+.field label {
+  display: block;
+  color: #8b949e;
+  margin-bottom: 0.5rem;
+  font-size: 14px;
+  font-weight: 500;
+}
+
+.input {
+  width: 100%;
+  padding: 12px;
+  background-color: #0d1117;
+  border: 1px solid #30363d;
+  border-radius: 8px;
+  color: #c9d1d9;
+  font-size: 15px;
+  transition: border-color 0.2s, box-shadow 0.2s;
+  box-sizing: border-box;
+}
+
+.input:focus {
+  outline: none;
+  border-color: #58a6ff;
+  box-shadow: 0 0 0 3px rgba(88, 166, 255, 0.2);
+}
+
+.input:disabled {
+  opacity: 0.6;
+  cursor: not-allowed;
+}
+
+/* 4. Box da Política de Senha (Segurança) */
+.policyBox {
+  margin-top: 0.8rem;
+  background-color: rgba(0, 0, 0, 0.2);
+  padding: 0.8rem;
+  border-radius: 6px;
+}
+
+.policyBox p {
+  margin: 0.4rem 0;
+  font-size: 12px;
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  transition: color 0.3s ease;
+}
+
+/* Estados de Validação */
+.valid {
+  color: #3fb950; /* Verde para requisito cumprido */
+}
+
+.invalid {
+  color: #f85149; /* Vermelho para requisito pendente */
+}
+
+/* 5. Botões */
+.button {
+  width: 100%;
+  padding: 12px;
+  background-color: #238636; 
+  color: #ffffff;
+  border: none;
+  border-radius: 8px;
+  font-size: 15px;
+  font-weight: 600;
+  cursor: pointer;
+  transition: background-color 0.2s, transform 0.1s;
+}
+
+.button:hover:not(:disabled) {
+  background-color: #2ea043;
+}
+
+.button:disabled {
+  background-color: #21262d;
+  color: #484f58;
+  cursor: not-allowed;
+  border: 1px solid #30363d;
+}
+
+.button:active:not(:disabled) {
+  transform: scale(0.98);
+}

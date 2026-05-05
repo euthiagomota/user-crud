@@ -1,0 +1,156 @@
+@import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap');
+
+/* 1. Reset Global e Fundo da Tela */
+body {
+  margin: 0;
+  font-family: 'Inter', sans-serif;
+  background-color: #0d1117; /* Fundo escuro padrão */
+  color: #c9d1d9; /* Cor do texto padrão */
+  overflow-x: hidden; /* Evita barra de rolagem horizontal */
+}
+
+/* 2. Barra de Navegação (Topo) */
+.navbar {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  background-color: #161b22; /* Mesma cor da sua loginBox */
+  padding: 1rem 2.5rem;
+  border-bottom: 1px solid #30363d; /* Mesma borda da loginBox */
+  box-shadow: 0 4px 12px rgba(0,0,0,0.2);
+}
+
+.navbar .logo {
+  font-weight: 700;
+  font-size: 1.2rem;
+  color: #f0f6fc;
+  letter-spacing: -0.5px;
+}
+
+.navbar .nav-links a {
+  color: #8b949e; /* Tom de cinza para links inativos */
+  text-decoration: none;
+  margin-left: 2rem;
+  font-size: 0.95rem;
+  font-weight: 500;
+  transition: color 0.2s ease;
+}
+
+.navbar .nav-links a:hover {
+  color: #f0f6fc; /* Fica branco ao passar o mouse */
+}
+
+.navbar .nav-links a.logout {
+  color: #f85149; /* Vermelho suave para o botão de sair */
+}
+
+.navbar .nav-links a.logout:hover {
+  color: #ff7b72;
+}
+
+/* 3. Container que centraliza o conteúdo */
+.wrapper {
+  display: flex;
+  flex: 1; /* Ocupa todo o espaço abaixo da navbar */
+  justify-content: center; /* Centraliza horizontal */
+  align-items: center;     /* Centraliza vertical */
+  width: 100%;
+}
+
+.loginBox {
+  background-color: #161b22;
+  padding: 2.5rem 2rem;
+  border-radius: 12px;
+  border: 1px solid #30363d;
+  width: 100%;
+  max-width: 400px; /* Aumentei um pouquinho para dar respiro aos inputs */
+  box-sizing: border-box; /* Essencial para o padding não "estourar" a largura */
+  box-shadow: 0 10px 30px rgba(0,0,0,0.5);
+  animation: fadeIn 0.5s ease-out; 
+}
+@keyframes fadeIn {
+  from { opacity: 0; transform: translateY(-15px); }
+  to { opacity: 1; transform: translateY(0); }
+}
+
+.title {
+  color: #f0f6fc;
+  text-align: center;
+  margin-bottom: 2rem;
+  font-weight: 700;
+  font-size: 1.5rem;
+  letter-spacing: -0.5px;
+}
+
+.field {
+  margin-bottom: 1.5rem;
+}
+
+.field label {
+  display: block;
+  color: #8b949e;
+  margin-bottom: 0.5rem;
+  font-size: 14px;
+  font-weight: 500;
+}
+
+.field input {
+  width: 100%;
+  padding: 12px;
+  background-color: #0d1117;
+  border: 1px solid #30363d;
+  border-radius: 8px;
+  color: #c9d1d9;
+  font-size: 15px;
+  outline: none;
+  box-sizing: border-box;
+  transition: all 0.3s ease; 
+}
+
+.field input:focus {
+  border-color: #58a6ff;
+  box-shadow: 0 0 0 3px rgba(88, 166, 255, 0.2); 
+}
+
+.button {
+  width: 100%;
+  padding: 12px;
+  background-color: #238636;
+  color: white;
+  border: none;
+  border-radius: 8px;
+  font-size: 15px;
+  font-weight: 600;
+  cursor: pointer;
+  transition: all 0.2s ease; 
+  margin-top: 10px;
+}
+
+.button:hover {
+  background-color: #2ea043;
+  transform: translateY(-2px);
+  box-shadow: 0 4px 12px rgba(35, 134, 54, 0.4); 
+}
+
+.button:active {
+  transform: translateY(0);
+}
+
+.secondaryButton {
+  width: 100%;
+  padding: 10px;
+  background-color: transparent;
+  color: #484f58;
+  border: 1px solid #30363d;
+  border-radius: 8px;
+  font-size: 14px;
+  font-weight: 500;
+  cursor: pointer;
+  margin-top: 15px;
+  transition: all 0.2s ease;
+}
+
+.secondaryButton:disabled {
+  opacity: 0.5;
+  cursor: not-allowed;
+}

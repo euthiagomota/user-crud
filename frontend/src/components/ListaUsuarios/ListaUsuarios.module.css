@@ -1,0 +1,116 @@
+/* 1. Container e Tipografia */
+.container {
+  padding: 2rem;
+  background-color: #0d1117;
+  min-height: 100vh;
+  color: #c9d1d9;
+  font-family: 'Inter', sans-serif;
+  display: flex;
+  flex-direction: column;
+  align-items: center; /* Centraliza a tabela no meio da tela */
+}
+
+/* 2. Cabeçalho e Seção de Ações */
+.headerSection {
+  width: 100%;
+  max-width: 1000px;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 2rem;
+}
+
+.actionButtons {
+  display: flex;
+  gap: 10px; /* Espaço entre os botões de infra */
+}
+
+/* 3. Tabela e Wrapper */
+.tableWrapper {
+  width: 100%;
+  max-width: 1000px;
+  overflow-x: auto;
+  background: #161b22;
+  border: 1px solid #30363d;
+  border-radius: 8px;
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.3);
+}
+
+table {
+  width: 100%;
+  border-collapse: collapse;
+  text-align: left;
+}
+
+th {
+  background-color: #21262d;
+  padding: 14px 12px;
+  border-bottom: 1px solid #30363d;
+  color: #8b949e;
+  font-size: 0.9rem;
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
+}
+
+td {
+  padding: 14px 12px;
+  border-bottom: 1px solid #30363d;
+  font-size: 0.95rem;
+}
+
+code {
+  background: #0d1117;
+  padding: 2px 6px;
+  border-radius: 4px;
+  color: #58a6ff;
+}
+
+/* 4. Botões de Ação Principal */
+.btnAdd { background-color: #238636; color: white; border: none; padding: 10px 16px; border-radius: 6px; font-weight: 600; cursor: pointer; transition: 0.2s; }
+.btnAdd:hover { background-color: #2ea043; }
+
+.btnBackup { background-color: #21262d; color: #58a6ff; border: 1px solid #30363d; padding: 10px 16px; border-radius: 6px; font-weight: 600; cursor: pointer; transition: 0.2s; }
+.btnBackup:hover { border-color: #58a6ff; background-color: rgba(88, 166, 255, 0.1); }
+
+.btnRestore { background-color: #da3633; color: white; border: none; padding: 10px 16px; border-radius: 6px; font-weight: 600; cursor: pointer; transition: 0.2s; }
+.btnRestore:hover { background-color: #f85149; }
+
+/* 5. Botões Internos da Tabela */
+.btnEdit { background: transparent; color: #8b949e; border: 1px solid #30363d; padding: 6px 12px; border-radius: 4px; cursor: pointer; margin-right: 8px; }
+.btnEdit:hover { color: #f0f6fc; border-color: #8b949e; }
+
+.btnDelete { background: rgba(248, 81, 73, 0.1); color: #f85149; border: 1px solid rgba(248, 81, 73, 0.4); padding: 6px 12px; border-radius: 4px; cursor: pointer; }
+.btnDelete:hover { background: #da3633; color: white; }
+
+/* 6. Modal de Adição (Segurança e UX) */
+.modalOverlay {
+  position: fixed;
+  top: 0; left: 0; width: 100%; height: 100%;
+  background: rgba(0, 0, 0, 0.8);
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  z-index: 9999;
+  backdrop-filter: blur(4px);
+}
+
+.modalContent {
+  background: #161b22;
+  padding: 2.5rem;
+  border-radius: 12px;
+  border: 1px solid #30363d;
+  width: 90%;
+  max-width: 400px;
+  box-shadow: 0 20px 50px rgba(0,0,0,0.5);
+}
+
+.modalContent h2 { margin-top: 0; color: #f0f6fc; font-size: 1.5rem; margin-bottom: 1.5rem; }
+
+.field { margin-bottom: 1.2rem; display: flex; flex-direction: column; gap: 8px; }
+.field label { font-size: 0.9rem; color: #8b949e; }
+.field input { padding: 10px; background: #0d1117; border: 1px solid #30363d; color: white; border-radius: 6px; outline: none; }
+.field input:focus { border-color: #58a6ff; }
+
+.modalActions { display: flex; justify-content: flex-end; align-items: center; gap: 15px; margin-top: 1.5rem; }
+.btnCancel { background: transparent; color: #8b949e; border: none; cursor: pointer; font-weight: 500; }
+.btnCancel:hover { color: #f85149; }
