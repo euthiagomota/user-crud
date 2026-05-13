@@ -1,44 +1,58 @@
-	import React, { useState, useEffect } from 'react';
-import { api } from '../../Api'; // CORRIGIDO: 'api' em minúsculo conforme o arquivo criado
+import React, { useState, useEffect } from 'react';
+import { api } from '../../Api'; 
 import { useNavigate } from 'react-router-dom';
 import styles from './Cadastro.module.css';
 
 export default function Cadastro() {
   const navigate = useNavigate();
   const [userData, setUserData] = useState({ name: '', email: '', password: '' });
-  const [checks, setChecks] = useState({ length: false, upper: false, number: false });
-  const [loading, setLoading] = useState(false); // Adicionado para feedback visual
-
   
-useEffect(() => {
-  const pwd = userData.password;
-  setChecks({
-    length: pwd.length >= 8,
-    upper: /[A-Z]/.test(pwd),
-    number: /[0-9]/.test(pwd) 
+  // Atualizado para incluir a regra de caracteres especiais
+  const [checks, setChecks] = useState({ 
+    length: false, 
+    upper: false, 
+    number: false,
+    special: false 
   });
-}, [userData.password]);
+  
+  const [loading, setLoading] = useState(false);
 
-  const isFormValid = checks.length && checks.upper && checks.number && userData.name && userData.email;
+  useEffect(() => {
+    const pwd = userData.password;
+    setChecks({
+      length: pwd.length >= 10, // Requisito: Mínimo de 10 caracteres
+      upper: /[A-Z]/.test(pwd),  // Requisito: Letra maiúscula
+      number: /[0-9]/.test(pwd), // Requisito: Numérico
+      special: /[!@#$%^&*(),.?":{}|<>]/.test(pwd) // Requisito: Caractere especial
+    });
+  }, [userData.password]);
+
+  // Validação do botão: todos os requisitos técnicos + preenchimento de campos
+  const isFormValid = 
+    checks.length && 
+    checks.upper && 
+    checks.number && 
+    checks.special && 
+    userData.name && 
+    userData.email;
 
   const handleRegister = async (e) => {
     e.preventDefault();
-    setLoading(true); // Inicia o estado de carregamento
+    setLoading(true);
     
     try {
-	console.log("Payload enviado:", userData);
-      // CHAMADA REAL: Enviando para a VM via nossa central de API
+      console.log("Payload enviado para infraestrutura:", userData);
       const response = await api.cadastro(userData);
       
       if (response.ok) {
         alert("Utilizador registado no servidor com sucesso!");
         navigate('/'); 
       } else {
-        alert("Erro no servidor ao realizar cadastro.");
+        alert("Erro no servidor ao realizar cadastro. Verifique as políticas de segurança.");
       }
     } catch (error) {
       console.error("Erro de conexão com a VM:", error);
-      alert("Não foi possível conectar à VM. Verifique se o servidor está rodando.");
+      alert("Falha crítica de comunicação com a VM.");
     } finally {
       setLoading(false);
     }
@@ -52,30 +66,25 @@ useEffect(() => {
           <div className={styles.field}>
             <label>Nome Completo</label>
             <input
-  		type="text"
-  		className={styles.input}
-  		required
- 		disabled={loading}
-	 	value={userData.name}   // ✅ FUNDAMENTAL
-		onChange={e =>
-    			setUserData({ ...userData, name: e.target.value })
-		  }
-		/>
+              type="text"
+              className={styles.input}
+              required
+              disabled={loading}
+              value={userData.name}
+              onChange={e => setUserData({ ...userData, name: e.target.value })}
+            />
           </div>
 
           <div className={styles.field}>
             <label>E-mail</label>
             <input
-	  	type="email"
-	  	className={styles.input}
-	  	required
-	  	disabled={loading}
-	  	value={userData.email}
-	  	onChange={e =>
-			setUserData({ ...userData, email: e.target.value })
-  			}
-		/>
-
+              type="email"
+              className={styles.input}
+              required
+              disabled={loading}
+              value={userData.email}
+              onChange={e => setUserData({ ...userData, email: e.target.value })}
+            />
           </div>
 
           <div className={styles.field}>
@@ -85,10 +94,11 @@ useEffect(() => {
               className={styles.input} 
               required 
               disabled={loading}
-	  	value={userData.password}
+              value={userData.password}
               onChange={e => setUserData({...userData, password: e.target.value})} 
             />
             
+            {/* Checklist de Segurança Visual */}
             <div className={styles.policyBox}>
               <p className={checks.length ? styles.valid : styles.invalid}>
                 {checks.length ? '✔' : '✖'} Mínimo de 10 caracteres
@@ -97,13 +107,16 @@ useEffect(() => {
                 {checks.upper ? '✔' : '✖'} Pelo menos uma letra maiúscula
               </p>
               <p className={checks.number ? styles.valid : styles.invalid}>
-                {checks.number ? '✔' : '✖'} Pelo menos um número ou símbolo
+                {checks.number ? '✔' : '✖'} Pelo menos um número
+              </p>
+              <p className={checks.special ? styles.valid : styles.invalid}>
+                {checks.special ? '✔' : '✖'} Pelo menos um caractere especial (!@#$)
               </p>
             </div>
           </div>
 
           <button type="submit" className={styles.button} disabled={!isFormValid || loading}>
-            {loading ? 'Processando...' : 'Finalizar Registo'}
+            {loading ? 'Criptografando...' : 'Finalizar Registo'}
           </button>
 
           <button 
@@ -112,7 +125,7 @@ useEffect(() => {
             className={styles.button} 
             style={{ backgroundColor: 'transparent', color: '#8b949e', marginTop: '10px', border: '1px solid #30363d' }}
           >
-            Já tenho conta (Voltar)
+            Voltar ao Login
           </button>
         </form>
       </div>

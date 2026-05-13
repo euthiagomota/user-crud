@@ -1,116 +1,300 @@
-/* 1. Container e Tipografia */
+@import url('https://fonts.googleapis.com/css2?family=Playfair+Display:wght@700&family=Poppins:wght@400;500;600&display=swap');
+
+/* 1. Container e Fundo */
 .container {
-  padding: 2rem;
-  background-color: #0d1117;
+  padding: 2.5rem;
+  background-color: #fdfaf6; /* Creme suave (estilo linho/papel) */
   min-height: 100vh;
-  color: #c9d1d9;
-  font-family: 'Inter', sans-serif;
+  color: #2c3e50;
+  font-family: 'Poppins', sans-serif;
   display: flex;
   flex-direction: column;
-  align-items: center; /* Centraliza a tabela no meio da tela */
+  align-items: center;
 }
 
-/* 2. Cabeçalho e Seção de Ações */
+/* 2. Cabeçalho */
 .headerSection {
   width: 100%;
-  max-width: 1000px;
+  max-width: 1100px;
   display: flex;
   justify-content: space-between;
   align-items: center;
+  margin-bottom: 2.5rem;
+  border-bottom: 2px solid #e67e22; /* Laranja Terracota */
+  padding-bottom: 1.5rem;
+}
+
+.headerSection h1 {
+  font-family: 'Playfair Display', serif;
+  font-size: 2.2rem;
+  margin: 0;
+  color: #3e2723; /* Marrom Café Profundo */
+}
+
+.headerSection p {
+  margin: 5px 0 0 0;
+  color: #8d6e63;
+  font-style: italic;
+}
+
+/* 3. Painel de Agendamento (Novo) */
+.agendamentoContainer {
+  width: 100%;
+  max-width: 1100px;
+  background: #ffffff;
+  padding: 1.5rem;
+  border-radius: 12px;
   margin-bottom: 2rem;
+  box-shadow: 0 10px 25px rgba(0,0,0,0.05);
+  animation: slideDown 0.3s ease-out;
 }
 
-.actionButtons {
-  display: flex;
-  gap: 10px; /* Espaço entre os botões de infra */
+@keyframes slideDown {
+  from { opacity: 0; transform: translateY(-10px); }
+  to { opacity: 1; transform: translateY(0); }
 }
 
-/* 3. Tabela e Wrapper */
+/* 4. Tabela Estilizada */
 .tableWrapper {
   width: 100%;
-  max-width: 1000px;
-  overflow-x: auto;
-  background: #161b22;
-  border: 1px solid #30363d;
-  border-radius: 8px;
-  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.3);
+  max-width: 1100px;
+  background: white;
+  border-radius: 15px;
+  overflow: hidden;
+  box-shadow: 0 15px 40px rgba(0, 0, 0, 0.04);
+  border: 1px solid #efebe9;
 }
 
 table {
   width: 100%;
   border-collapse: collapse;
-  text-align: left;
 }
 
 th {
-  background-color: #21262d;
-  padding: 14px 12px;
-  border-bottom: 1px solid #30363d;
-  color: #8b949e;
-  font-size: 0.9rem;
+  background-color: #f8f5f2;
+  padding: 18px 15px;
+  color: #e67e22;
+  font-size: 0.8rem;
   text-transform: uppercase;
-  letter-spacing: 0.05em;
+  letter-spacing: 2px;
+  font-weight: 700;
+  text-align: left;
 }
 
 td {
-  padding: 14px 12px;
-  border-bottom: 1px solid #30363d;
+  padding: 16px 15px;
+  border-bottom: 1px solid #f3f0ee;
+  color: #5d4037;
   font-size: 0.95rem;
 }
 
+tr:last-child td { border-bottom: none; }
+
+tr:hover { background-color: #fffaf5; }
+
 code {
-  background: #0d1117;
-  padding: 2px 6px;
-  border-radius: 4px;
-  color: #58a6ff;
+  background: #efebe9;
+  padding: 4px 8px;
+  border-radius: 6px;
+  color: #d35400;
+  font-family: monospace;
+  font-weight: 600;
 }
 
-/* 4. Botões de Ação Principal */
-.btnAdd { background-color: #238636; color: white; border: none; padding: 10px 16px; border-radius: 6px; font-weight: 600; cursor: pointer; transition: 0.2s; }
-.btnAdd:hover { background-color: #2ea043; }
+/* 5. Botões de Infra (Estilo Pílula) */
+.actionButtons {
+  display: flex;
+  gap: 12px;
+}
 
-.btnBackup { background-color: #21262d; color: #58a6ff; border: 1px solid #30363d; padding: 10px 16px; border-radius: 6px; font-weight: 600; cursor: pointer; transition: 0.2s; }
-.btnBackup:hover { border-color: #58a6ff; background-color: rgba(88, 166, 255, 0.1); }
+.btnAdd, .btnBackup, .btnRestore {
+  padding: 10px 20px;
+  border-radius: 30px; /* Estilo arredondado chic */
+  font-weight: 600;
+  font-size: 0.85rem;
+  cursor: pointer;
+  transition: all 0.3s ease;
+  border: none;
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+}
 
-.btnRestore { background-color: #da3633; color: white; border: none; padding: 10px 16px; border-radius: 6px; font-weight: 600; cursor: pointer; transition: 0.2s; }
-.btnRestore:hover { background-color: #f85149; }
+.btnAdd { background-color: #27ae60; color: white; }
+.btnAdd:hover { background-color: #219150; transform: translateY(-2px); box-shadow: 0 4px 12px rgba(39, 174, 96, 0.3); }
 
-/* 5. Botões Internos da Tabela */
-.btnEdit { background: transparent; color: #8b949e; border: 1px solid #30363d; padding: 6px 12px; border-radius: 4px; cursor: pointer; margin-right: 8px; }
-.btnEdit:hover { color: #f0f6fc; border-color: #8b949e; }
+.btnBackup { background-color: #3e2723; color: white; }
+.btnBackup:hover { background-color: #2c1d1a; transform: translateY(-2px); }
 
-.btnDelete { background: rgba(248, 81, 73, 0.1); color: #f85149; border: 1px solid rgba(248, 81, 73, 0.4); padding: 6px 12px; border-radius: 4px; cursor: pointer; }
-.btnDelete:hover { background: #da3633; color: white; }
+.btnRestore { background-color: #c0392b; color: white; }
+.btnRestore:hover { background-color: #a93226; transform: translateY(-2px); }
 
-/* 6. Modal de Adição (Segurança e UX) */
+/* 6. Botões da Tabela */
+.btnEdit, .btnDelete {
+  padding: 6px 15px;
+  border-radius: 20px;
+  font-size: 0.8rem;
+  font-weight: 600;
+  cursor: pointer;
+  transition: 0.2s;
+  margin-right: 5px;
+}
+
+.btnEdit { background: transparent; color: #7f8c8d; border: 1px solid #bdc3c7; }
+.btnEdit:hover { color: #e67e22; border-color: #e67e22; }
+
+.btnDelete { background: #fff5f5; color: #c0392b; border: 1px solid #f5c6cb; }
+.btnDelete:hover { background: #c0392b; color: white; }
+
+/* 7. Inputs e Formulários */
+.input {
+  padding: 10px 15px;
+  border: 1px solid #d7ccc8;
+  border-radius: 8px;
+  background-color: #fdfaf6;
+  color: #3e2723;
+  font-family: 'Poppins', sans-serif;
+}
+
+.input:focus {
+  outline: none;
+  border-color: #e67e22;
+  box-shadow: 0 0 0 3px rgba(230, 126, 34, 0.1);
+}
+
+.btnCancel {
+  background: transparent;
+  color: #8d6e63;
+  border: none;
+  font-weight: 600;
+  cursor: pointer;
+}
+
+/* 8. Modal Overlay */
+/* 1. O Fundo Escurecido (Overlay) */
 .modalOverlay {
   position: fixed;
-  top: 0; left: 0; width: 100%; height: 100%;
-  background: rgba(0, 0, 0, 0.8);
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  /* Marrom profundo translúcido para combinar com o tema café/vinho */
+  background: rgba(26, 18, 14, 0.85); 
   display: flex;
   justify-content: center;
   align-items: center;
   z-index: 9999;
-  backdrop-filter: blur(4px);
+  /* Efeito de vidro fosco no fundo para foco total */
+  backdrop-filter: blur(8px);
+  animation: fadeIn 0.3s ease;
 }
 
+/* 2. A Caixa do Modal */
 .modalContent {
-  background: #161b22;
-  padding: 2.5rem;
-  border-radius: 12px;
-  border: 1px solid #30363d;
+  background: #ffffff;
+  padding: 3rem; /* Aumentado para dar mais elegância */
+  border-radius: 20px;
   width: 90%;
-  max-width: 400px;
-  box-shadow: 0 20px 50px rgba(0,0,0,0.5);
+  max-width: 450px;
+  box-shadow: 0 25px 50px rgba(0, 0, 0, 0.3);
+  border-top: 8px solid #e67e22; /* Destaque em terracota */
+  position: relative;
+  animation: scaleIn 0.3s cubic-bezier(0.175, 0.885, 0.32, 1.275);
 }
 
-.modalContent h2 { margin-top: 0; color: #f0f6fc; font-size: 1.5rem; margin-bottom: 1.5rem; }
+@keyframes scaleIn {
+  from { opacity: 0; transform: scale(0.9); }
+  to { opacity: 1; transform: scale(1); }
+}
 
-.field { margin-bottom: 1.2rem; display: flex; flex-direction: column; gap: 8px; }
-.field label { font-size: 0.9rem; color: #8b949e; }
-.field input { padding: 10px; background: #0d1117; border: 1px solid #30363d; color: white; border-radius: 6px; outline: none; }
-.field input:focus { border-color: #58a6ff; }
+.modalContent h2 {
+  font-family: 'Playfair Display', serif;
+  color: #3e2723;
+  font-size: 2rem;
+  margin-bottom: 0.5rem;
+  text-align: center;
+}
 
-.modalActions { display: flex; justify-content: flex-end; align-items: center; gap: 15px; margin-top: 1.5rem; }
-.btnCancel { background: transparent; color: #8b949e; border: none; cursor: pointer; font-weight: 500; }
-.btnCancel:hover { color: #f85149; }
+/* Subtítulo para o modal */
+.modalContent p {
+  text-align: center;
+  color: #8d6e63;
+  margin-bottom: 2rem;
+  font-size: 0.9rem;
+}
+
+/* 3. Ajuste dos Campos no Modal */
+.modalContent .field {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+  margin-bottom: 1.5rem;
+}
+
+.modalContent .field label {
+  font-weight: 600;
+  color: #5d4037;
+  font-size: 0.85rem;
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+}
+
+.modalContent .field input {
+  padding: 14px;
+  border: 1px solid #d7ccc8;
+  border-radius: 10px;
+  background-color: #fdfaf6;
+  font-size: 1rem;
+  transition: all 0.2s;
+}
+
+.modalContent .field input:focus {
+  border-color: #e67e22;
+  background-color: #fff;
+  box-shadow: 0 0 0 4px rgba(230, 126, 34, 0.1);
+}
+
+/* 4. Ações do Modal */
+.modalActions {
+  display: flex;
+  flex-direction: column; /* Botões um sobre o outro para mobile-first ou lado a lado */
+  gap: 12px;
+  margin-top: 2rem;
+}
+
+/* Botão principal de registro */
+.btnRegister {
+  background-color: #e67e22;
+  color: white;
+  padding: 14px;
+  border: none;
+  border-radius: 30px;
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: 1px;
+  cursor: pointer;
+  transition: 0.3s;
+}
+
+.btnRegister:hover {
+  background-color: #d35400;
+  transform: translateY(-2px);
+  box-shadow: 0 5px 15px rgba(211, 84, 0, 0.3);
+}
+
+/* Botão de cancelar */
+.btnCancel {
+  background: transparent;
+  color: #8d6e63;
+  border: 1px solid #d7ccc8;
+  padding: 12px;
+  border-radius: 30px;
+  font-weight: 600;
+  cursor: pointer;
+  transition: 0.2s;
+}
+
+.btnCancel:hover {
+  background-color: #fbe9e7;
+  color: #c0392b;
+  border-color: #f5c6cb;
+}

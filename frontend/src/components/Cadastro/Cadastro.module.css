@@ -1,22 +1,26 @@
-/* Cadastro.module.css */
-
+/* 1. O Container Principal */
 .wrapper {
   display: flex;
-  flex: 1; /* Ocupa todo o espaço abaixo da navbar */
-  justify-content: center; /* Centraliza horizontal */
-  align-items: center;     /* Centraliza vertical */
+  flex: 1;
+  justify-content: center;
+  align-items: center;
   width: 100%;
+  /* Fundo com imagem suave de textura de mesa ou restaurante */
+  background: linear-gradient(rgba(0,0,0,0.5), rgba(0,0,0,0.5)), 
+              url('https://images.unsplash.com/photo-1514362545857-3bc16c4c7d1b?q=80&w=2070');
+  background-size: cover;
+  min-height: 100vh;
 }
 
-/* 2. O Cartão de Cadastro */
+/* 2. O Cartão de Cadastro (Estilo Menu/Papel) */
 .card {
-  background-color: #161b22; /* Fundo levemente mais claro que o body */
+  background-color: #fdfaf6; /* Bege/Creme claro estilo menu */
   padding: 2.5rem 2rem;
-  border-radius: 12px;
-  border: 1px solid #30363d;
+  border-radius: 15px;
+  border-top: 6px solid #e67e22; /* Detalhe em terracota */
   width: 100%;
-  max-width: 420px; /* Um pouco mais largo para acomodar a política de senha */
-  box-shadow: 0 10px 30px rgba(0,0,0,0.5);
+  max-width: 420px;
+  box-shadow: 0 15px 35px rgba(0,0,0,0.3);
   animation: fadeIn 0.4s ease-out;
 }
 
@@ -26,34 +30,35 @@
 }
 
 .title {
-  color: #f0f6fc;
+  color: #2c3e50; /* Azul marinho escuro para elegância */
   text-align: center;
   margin-bottom: 2rem;
-  font-size: 1.6rem;
-  font-weight: 600;
+  font-size: 1.8rem;
+  font-family: 'Playfair Display', serif; /* Fonte clássica de restaurante */
+  font-weight: 700;
 }
 
 /* 3. Campos de Entrada */
 .field {
   margin-bottom: 1.2rem;
-  text-align: left; /* Garante que labels e textos fiquem à esquerda */
+  text-align: left;
 }
 
 .field label {
   display: block;
-  color: #8b949e;
+  color: #5d4037; /* Marrom café */
   margin-bottom: 0.5rem;
   font-size: 14px;
-  font-weight: 500;
+  font-weight: 600;
 }
 
 .input {
   width: 100%;
   padding: 12px;
-  background-color: #0d1117;
-  border: 1px solid #30363d;
+  background-color: #ffffff;
+  border: 1px solid #d7ccc8;
   border-radius: 8px;
-  color: #c9d1d9;
+  color: #3e2723;
   font-size: 15px;
   transition: border-color 0.2s, box-shadow 0.2s;
   box-sizing: border-box;
@@ -61,8 +66,8 @@
 
 .input:focus {
   outline: none;
-  border-color: #58a6ff;
-  box-shadow: 0 0 0 3px rgba(88, 166, 255, 0.2);
+  border-color: #e67e22; /* Laranja gastronômico no foco */
+  box-shadow: 0 0 0 3px rgba(230, 126, 34, 0.2);
 }
 
 .input:disabled {
@@ -73,9 +78,10 @@
 /* 4. Box da Política de Senha (Segurança) */
 .policyBox {
   margin-top: 0.8rem;
-  background-color: rgba(0, 0, 0, 0.2);
+  background-color: #efebe9; /* Fundo cinza/marrom bem clarinho */
   padding: 0.8rem;
   border-radius: 6px;
+  border: 1px dashed #d7ccc8;
 }
 
 .policyBox p {
@@ -85,40 +91,46 @@
   align-items: center;
   gap: 8px;
   transition: color 0.3s ease;
+  font-weight: 500;
 }
 
 /* Estados de Validação */
 .valid {
-  color: #3fb950; /* Verde para requisito cumprido */
+  color: #27ae60; /* Verde oliva para sucesso */
 }
 
 .invalid {
-  color: #f85149; /* Vermelho para requisito pendente */
+  color: #c0392b; /* Vermelho vinho para erro */
 }
 
 /* 5. Botões */
 .button {
   width: 100%;
   padding: 12px;
-  background-color: #238636; 
+  background-color: #e67e22; /* Laranja Terracota */
   color: #ffffff;
   border: none;
-  border-radius: 8px;
+  border-radius: 25px; /* Botão mais arredondado e elegante */
   font-size: 15px;
   font-weight: 600;
+  text-transform: uppercase;
+  letter-spacing: 1px;
   cursor: pointer;
-  transition: background-color 0.2s, transform 0.1s;
+  transition: all 0.2s;
+  box-shadow: 0 4px 6px rgba(0,0,0,0.1);
 }
 
 .button:hover:not(:disabled) {
-  background-color: #2ea043;
+  background-color: #d35400;
+  transform: translateY(-2px);
+  box-shadow: 0 6px 12px rgba(0,0,0,0.15);
 }
 
 .button:disabled {
-  background-color: #21262d;
-  color: #484f58;
+  background-color: #d7ccc8;
+  color: #8d6e63;
   cursor: not-allowed;
-  border: 1px solid #30363d;
+  border: 1px solid #bcaaa4;
 }
 
 .button:active:not(:disabled) {

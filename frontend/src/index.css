@@ -1,17 +1,21 @@
-/* index.css */
+@import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600&family=Playfair+Display:wght@700&family=Poppins:wght@400;500;600&display=swap');
+
 :root {
-  --bg: #0d1117;
-  --bg-secondary: #161b22;
-  --border: #30363d;
-  --text: #c9d1d9;
-  --accent: #58a6ff;
+  /* Paleta Gastronômica */
+  --bg: #fdfaf6;           /* Creme/Papel suave */
+  --bg-secondary: #ffffff;  /* Branco puro para containers */
+  --border: #d7ccc8;       /* Bege/Marrom claro */
+  --text: #2c3e50;         /* Azul marinho escuro (legibilidade) */
+  --accent: #e67e22;       /* Laranja Terracota */
+  --text-muted: #8d6e63;   /* Marrom café para textos secundários */
 }
 
 body {
   margin: 0;
   background-color: var(--bg);
   color: var(--text);
-  font-family: 'Inter', sans-serif;
+  font-family: 'Poppins', sans-serif;
+  -webkit-font-smoothing: antialiased;
 }
 
 /* Centralização do Root */
@@ -22,32 +26,44 @@ body {
   min-height: 100vh;
   display: flex;
   flex-direction: column;
-  border-inline: 1px solid var(--border);
+  /* Removi a borda lateral de TI para um visual mais limpo */
 }
 
-/* Estilo da Navbar */
+/* Estilo da Navbar Atualizado */
 .navbar {
   width: 100%;
   background-color: var(--bg-secondary);
   border-bottom: 1px solid var(--border);
   display: flex;
   justify-content: center;
+  box-shadow: 0 2px 10px rgba(0,0,0,0.05);
 }
 
 .navbar-content {
   width: 100%;
+  max-width: 1200px; /* Limita a largura para telas grandes */
   padding: 1rem 2rem;
   display: flex;
   justify-content: space-between;
   align-items: center;
 }
 
+.navbar .logo {
+  font-family: 'Playfair Display', serif;
+  font-size: 1.5rem;
+  color: #3e2723;
+  font-weight: 700;
+}
+
 .nav-links a {
-  color: #8b949e;
+  color: var(--text-muted);
   text-decoration: none;
   margin-left: 20px;
   font-size: 14px;
-  transition: color 0.2s;
+  font-weight: 600;
+  transition: all 0.3s ease;
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
 }
 
 .nav-links a:hover {
@@ -55,14 +71,20 @@ body {
 }
 
 .nav-links .admin-link {
-  border: 1px solid var(--border);
-  padding: 5px 12px;
-  border-radius: 6px;
+  border: 2px solid var(--accent);
+  color: var(--accent);
+  padding: 6px 16px;
+  border-radius: 25px;
+}
+
+.nav-links .admin-link:hover {
+  background-color: var(--accent);
+  color: white;
 }
 
 /* Área de Conteúdo das Telas */
 .main-content {
-  flex: 1; /* Faz as telas ocuparem o resto da altura */
+  flex: 1;
   display: flex;
   flex-direction: column;
   width: 100%;

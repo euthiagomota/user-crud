@@ -1,84 +1,49 @@
-@import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap');
+@import url('https://fonts.googleapis.com/css2?family=Playfair+Display:wght@700&family=Poppins:wght@400;500;600&display=swap');
 
 /* 1. Reset Global e Fundo da Tela */
-body {
-  margin: 0;
-  font-family: 'Inter', sans-serif;
-  background-color: #0d1117; /* Fundo escuro padrão */
-  color: #c9d1d9; /* Cor do texto padrão */
-  overflow-x: hidden; /* Evita barra de rolagem horizontal */
-}
+/* Nota: Como você usa CSS Modules, o 'body' deve ser tratado com cuidado. 
+   O ideal é que o fundo da página esteja no .wrapper */
 
-/* 2. Barra de Navegação (Topo) */
-.navbar {
-  display: flex;
-  justify-content: space-between;
-  align-items: center;
-  background-color: #161b22; /* Mesma cor da sua loginBox */
-  padding: 1rem 2.5rem;
-  border-bottom: 1px solid #30363d; /* Mesma borda da loginBox */
-  box-shadow: 0 4px 12px rgba(0,0,0,0.2);
-}
-
-.navbar .logo {
-  font-weight: 700;
-  font-size: 1.2rem;
-  color: #f0f6fc;
-  letter-spacing: -0.5px;
-}
-
-.navbar .nav-links a {
-  color: #8b949e; /* Tom de cinza para links inativos */
-  text-decoration: none;
-  margin-left: 2rem;
-  font-size: 0.95rem;
-  font-weight: 500;
-  transition: color 0.2s ease;
-}
-
-.navbar .nav-links a:hover {
-  color: #f0f6fc; /* Fica branco ao passar o mouse */
-}
-
-.navbar .nav-links a.logout {
-  color: #f85149; /* Vermelho suave para o botão de sair */
-}
-
-.navbar .nav-links a.logout:hover {
-  color: #ff7b72;
-}
-
-/* 3. Container que centraliza o conteúdo */
+/* 2. Container que centraliza o conteúdo */
 .wrapper {
   display: flex;
-  flex: 1; /* Ocupa todo o espaço abaixo da navbar */
-  justify-content: center; /* Centraliza horizontal */
-  align-items: center;     /* Centraliza vertical */
+  flex: 1;
+  justify-content: center;
+  align-items: center;
   width: 100%;
+  min-height: 100vh;
+  /* Fundo com imagem de restaurante para criar o clima */
+  background: linear-gradient(rgba(0,0,0,0.5), rgba(0,0,0,0.5)), 
+              url('https://images.unsplash.com/photo-1514362545857-3bc16c4c7d1b?q=80&w=2070');
+  background-size: cover;
+  background-position: center;
 }
 
+/* 3. A "Caixa de Entrada" do Restaurante */
 .loginBox {
-  background-color: #161b22;
+  background-color: #fdfaf6; /* Papel creme/menu */
   padding: 2.5rem 2rem;
-  border-radius: 12px;
-  border: 1px solid #30363d;
+  border-radius: 15px;
+  border-top: 6px solid #e67e22; /* Laranja Terracota */
   width: 100%;
-  max-width: 400px; /* Aumentei um pouquinho para dar respiro aos inputs */
-  box-sizing: border-box; /* Essencial para o padding não "estourar" a largura */
-  box-shadow: 0 10px 30px rgba(0,0,0,0.5);
+  max-width: 400px;
+  box-sizing: border-box;
+  box-shadow: 0 15px 35px rgba(0,0,0,0.3);
   animation: fadeIn 0.5s ease-out; 
 }
+
 @keyframes fadeIn {
   from { opacity: 0; transform: translateY(-15px); }
   to { opacity: 1; transform: translateY(0); }
 }
 
 .title {
-  color: #f0f6fc;
+  color: #2c3e50; /* Azul marinho elegante */
   text-align: center;
   margin-bottom: 2rem;
+  font-family: 'Playfair Display', serif;
   font-weight: 700;
-  font-size: 1.5rem;
+  font-size: 1.8rem;
   letter-spacing: -0.5px;
 }
 
@@ -88,19 +53,20 @@ body {
 
 .field label {
   display: block;
-  color: #8b949e;
+  color: #5d4037; /* Marrom café */
   margin-bottom: 0.5rem;
+  font-family: 'Poppins', sans-serif;
   font-size: 14px;
-  font-weight: 500;
+  font-weight: 600;
 }
 
 .field input {
   width: 100%;
   padding: 12px;
-  background-color: #0d1117;
-  border: 1px solid #30363d;
+  background-color: #ffffff;
+  border: 1px solid #d7ccc8;
   border-radius: 8px;
-  color: #c9d1d9;
+  color: #3e2723;
   font-size: 15px;
   outline: none;
   box-sizing: border-box;
@@ -108,46 +74,56 @@ body {
 }
 
 .field input:focus {
-  border-color: #58a6ff;
-  box-shadow: 0 0 0 3px rgba(88, 166, 255, 0.2); 
+  border-color: #e67e22;
+  box-shadow: 0 0 0 3px rgba(230, 126, 34, 0.2); 
 }
 
+/* 4. Botão Principal (Ação de Entrada) */
 .button {
   width: 100%;
-  padding: 12px;
-  background-color: #238636;
+  padding: 14px;
+  background-color: #e67e22; /* Laranja Gastronômico */
   color: white;
   border: none;
-  border-radius: 8px;
+  border-radius: 25px; /* Arredondado estilo botão de reserva */
   font-size: 15px;
   font-weight: 600;
+  text-transform: uppercase;
+  letter-spacing: 1px;
   cursor: pointer;
   transition: all 0.2s ease; 
   margin-top: 10px;
+  box-shadow: 0 4px 6px rgba(0,0,0,0.1);
 }
 
 .button:hover {
-  background-color: #2ea043;
+  background-color: #d35400;
   transform: translateY(-2px);
-  box-shadow: 0 4px 12px rgba(35, 134, 54, 0.4); 
+  box-shadow: 0 6px 12px rgba(211, 84, 0, 0.3); 
 }
 
 .button:active {
   transform: translateY(0);
 }
 
+/* 5. Botão para Novos Clientes (Cadastro) */
 .secondaryButton {
   width: 100%;
   padding: 10px;
   background-color: transparent;
-  color: #484f58;
-  border: 1px solid #30363d;
-  border-radius: 8px;
+  color: #8d6e63;
+  border: 1px solid #d7ccc8;
+  border-radius: 25px;
   font-size: 14px;
-  font-weight: 500;
+  font-weight: 600;
   cursor: pointer;
   margin-top: 15px;
   transition: all 0.2s ease;
+}
+
+.secondaryButton:hover {
+  background-color: #efebe9;
+  color: #5d4037;
 }
 
 .secondaryButton:disabled {

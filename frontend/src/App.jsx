@@ -2,6 +2,7 @@ import { Routes, Route, Link } from 'react-router-dom';
 import Login from './components/Login/Login';
 import Cadastro from './components/Cadastro/Cadastro';
 import ListaUsuarios from './components/ListaUsuarios/ListaUsuarios';
+import './App.css'; 
 
 function App() {
   return (
