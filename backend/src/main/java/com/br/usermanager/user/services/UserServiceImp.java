@@ -15,6 +15,7 @@ import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.util.StringUtils;
 
+import java.time.LocalDateTime;
 import java.util.List;
 import java.util.UUID;
 
@@ -33,12 +34,51 @@ public class UserServiceImp implements UserService {
 
     @Override
     public String login(LoginDTO dto) {
+
         User user = userRepository.findByEmail(dto.email())
                 .orElseThrow(() -> new RuntimeException("Usuário não encontrado"));
 
+        // ✅ VERIFICA SE ESTÁ BLOQUEADO
+        if (Boolean.TRUE.equals(user.getAccountLocked())) {
+
+            if (user.getLockTime() != null &&
+                    user.getLockTime().plusMinutes(10).isAfter(LocalDateTime.now())) {
+
+                throw new RuntimeException("Usuário bloqueado. Tente novamente após 10 minutos.");
+
+            } else {
+                // ✅ DESBLOQUEIA AUTOMATICAMENTE
+                user.setAccountLocked(false);
+                user.setFailedLoginAttempts(0);
+                user.setLockTime(null);
+            }
+        }
+
+        // ✅ VERIFICA SENHA
         if (!passwordEncoder.matches(dto.password(), user.getPassword())) {
+
+            int tentativas = user.getFailedLoginAttempts() + 1;
+            user.setFailedLoginAttempts(tentativas);
+
+            // ✅ BLOQUEIA APÓS 5 TENTATIVAS
+            if (tentativas >= 5) {
+                user.setAccountLocked(true);
+                user.setLockTime(LocalDateTime.now());
+                userRepository.save(user);
+
+                throw new RuntimeException("Usuário bloqueado por excesso de tentativas.");
+            }
+
+            userRepository.save(user);
             throw new RuntimeException("Credenciais inválidas");
         }
+
+        // ✅ LOGIN CORRETO → RESET
+        user.setFailedLoginAttempts(0);
+        user.setAccountLocked(false);
+        user.setLockTime(null);
+
+        userRepository.save(user);
 
         return "Login realizado com sucesso";
     }
@@ -55,10 +95,10 @@ public class UserServiceImp implements UserService {
         user.setEmail(request.email());
 
         if (StringUtils.hasText(request.password())) {
-            if (request.password().length() < 8) {
-                throw new RuntimeException("Senha deve ter no minimo 8 caracteres");
-            }
+            validarPoliticaSenha(request.password());
             user.setPassword(passwordEncoder.encode(request.password()));
+        } else {
+            throw new RuntimeException("Senha é obrigatória");
         }
 
         return UserResponseDTO.fromEntity(userRepository.save(user));
@@ -67,6 +107,7 @@ public class UserServiceImp implements UserService {
     @Override
     public List<UserResponseDTO> registerUsers(List<CreateUserRequestDTO> requests) {
         return requests.stream().map(request -> {
+
             if (userRepository.existsByEmail(request.email())) {
                 throw new RuntimeException("Email já cadastrado: " + request.email());
             }
@@ -74,6 +115,7 @@ public class UserServiceImp implements UserService {
             User user = new User();
             user.setName(request.name());
             user.setEmail(request.email());
+            validarPoliticaSenha(request.password());
             user.setPassword(passwordEncoder.encode(request.password()));
 
             return UserResponseDTO.fromEntity(userRepository.save(user));
@@ -95,20 +137,15 @@ public class UserServiceImp implements UserService {
         user.setEmail(request.email());
 
         if (request.password() != null && !request.password().isBlank()) {
-            if (request.password().length() < 8) {
-                throw new RuntimeException("Senha deve ter no minimo 8 caracteres");
-            }
+            validarPoliticaSenha(request.password());
             user.setPassword(passwordEncoder.encode(request.password()));
         } else {
-            // Explicitly preserve current password when update request has no password.
             user.setPassword(currentPassword);
         }
 
         if (!StringUtils.hasText(user.getPassword())) {
             throw new RuntimeException("Erro interno: senha nao carregada corretamente");
         }
-
-        log.info("Senha antes do save esta preenchida: {}", StringUtils.hasText(user.getPassword()));
 
         return UserResponseDTO.fromEntity(userRepository.save(user));
     }
@@ -133,5 +170,28 @@ public class UserServiceImp implements UserService {
     private User findUserById(UUID id) {
         return userRepository.findById(id)
                 .orElseThrow(() -> new RuntimeException("Usuário não encontrado"));
+    }
+
+    private void validarPoliticaSenha(String senha) {
+
+        if (senha.length() < 10) {
+            throw new RuntimeException("Senha deve possuir no mínimo 10 caracteres");
+        }
+
+        if (!senha.matches(".*[A-Z].*")) {
+            throw new RuntimeException("Senha deve possuir pelo menos uma letra maiúscula");
+        }
+
+        if (!senha.matches(".*[a-z].*")) {
+            throw new RuntimeException("Senha deve possuir pelo menos uma letra minúscula");
+        }
+
+        if (!senha.matches(".*\\d.*")) {
+            throw new RuntimeException("Senha deve possuir pelo menos um número");
+        }
+
+        if (!senha.matches(".*[^a-zA-Z0-9].*")) {
+            throw new RuntimeException("Senha deve possuir pelo menos um caractere especial");
+        }
     }
 }

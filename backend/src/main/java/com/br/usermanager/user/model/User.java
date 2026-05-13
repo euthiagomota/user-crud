@@ -35,4 +35,14 @@ public class User {
     public void onCreate() {
         this.createdAt = LocalDateTime.now();
     }
+
+    @Column(name = "failed_login_attempts")
+    private int failedLoginAttempts = 0;
+
+    @Column(name = "account_locked")
+    private Boolean accountLocked = false;
+
+    @Column(name = "lock_time")
+    private LocalDateTime lockTime;
+
 }
