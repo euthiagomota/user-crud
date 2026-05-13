@@ -2,46 +2,81 @@
 
 const BASE_URL = "/api";
 
+// ✅ função padrão para tratar resposta
+async function handleResponse(response) {
+  const text = await response.text();
+
+  if (!response.ok) {
+    // tenta pegar erro do backend
+    let message = text;
+
+    try {
+      const json = JSON.parse(text);
+      message = json.message || text;
+    } catch (e) {}
+
+    throw new Error(message);
+  }
+
+  // tenta retornar JSON se possível
+  try {
+    return JSON.parse(text);
+  } catch (e) {
+    return text;
+  }
+}
+
 export const api = {
-  // LOGIN
-  login: (credentials) =>
-    fetch(`${BASE_URL}/users/login`, {
-      method: "POST",
-      headers: { "Content-Type": "application/json" },
-      body: JSON.stringify(credentials),
-    }),
 
-  // LISTAR USUÁRIOS
-  getUsuarios: () =>
-    fetch(`${BASE_URL}/users`),
+  // ✅ LOGIN
+  login: async (credentials) =>
+    handleResponse(
+      await fetch(`${BASE_URL}/users/login`, {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify(credentials),
+      })
+    ),
 
-  // CADASTRAR USUÁRIO
-  cadastro: (userData) =>
-    fetch(`${BASE_URL}/users`, {
-      method: "POST",
-      headers: { "Content-Type": "application/json" },
-      body: JSON.stringify({
-        name: userData.name,
-        email: userData.email,
-        password: userData.password,
-      }),
-    }),
+  // ✅ LISTAR USUÁRIOS
+  getUsuarios: async () =>
+    handleResponse(await fetch(`${BASE_URL}/users`)),
 
-  // EXCLUIR USUÁRIO
-  excluirUsuario: (id) =>
-    fetch(`${BASE_URL}/users/${id}`, {
-      method: "DELETE",
-    }),
+  // ✅ CADASTRAR USUÁRIO
+  cadastro: async (userData) =>
+    handleResponse(
+      await fetch(`${BASE_URL}/users`, {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({
+          name: userData.name,
+          email: userData.email,
+          password: userData.password,
+        }),
+      })
+    ),
 
-  // ✅ BACKUP (ROTA CORRETA)
-  backupSistema: () =>
-    fetch(`${BASE_URL}/backup`, {
-      method: "POST",
-    }),
+  // ✅ EXCLUIR USUÁRIO
+  excluirUsuario: async (id) =>
+    handleResponse(
+      await fetch(`${BASE_URL}/users/${id}`, {
+        method: "DELETE",
+      })
+    ),
 
-  // ✅ RESTORE (ROTA CORRETA COM fileName)
-  restoreSistema: (fileName) =>
-    fetch(`${BASE_URL}/restore?fileName=${encodeURIComponent(fileName)}`, {
-      method: "POST",
-    }),
+  // ✅ BACKUP
+  backupSistema: async () =>
+    handleResponse(
+      await fetch(`${BASE_URL}/backup`, {
+        method: "POST",
+      })
+    ),
+
+  // ✅ RESTORE
+  restoreSistema: async (fileName) =>
+    handleResponse(
+      await fetch(`${BASE_URL}/restore?fileName=${encodeURIComponent(fileName)}`, {
+        method: "POST",
+      })
+    ),
 };
