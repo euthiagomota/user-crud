@@ -5,54 +5,57 @@ import styles from './Cadastro.module.css';
 
 export default function Cadastro() {
   const navigate = useNavigate();
+
   const [userData, setUserData] = useState({ name: '', email: '', password: '' });
-  
-  // Atualizado para incluir a regra de caracteres especiais
+
   const [checks, setChecks] = useState({ 
     length: false, 
     upper: false, 
     number: false,
     special: false 
   });
-  
+
   const [loading, setLoading] = useState(false);
 
+  // ✅ atualização das regras visuais (igual backend)
   useEffect(() => {
     const pwd = userData.password;
+
     setChecks({
-      length: pwd.length >= 10, // Requisito: Mínimo de 10 caracteres
-      upper: /[A-Z]/.test(pwd),  // Requisito: Letra maiúscula
-      number: /[0-9]/.test(pwd), // Requisito: Numérico
-      special: /[!@#$%^&*(),.?":{}|<>]/.test(pwd) // Requisito: Caractere especial
+      length: pwd.length >= 10,
+      upper: /[A-Z]/.test(pwd),
+      number: /\d/.test(pwd),
+      special: /[^a-zA-Z0-9]/.test(pwd) // ✅ alinhado com backend
     });
+
   }, [userData.password]);
 
-  // Validação do botão: todos os requisitos técnicos + preenchimento de campos
-  const isFormValid = 
-    checks.length && 
-    checks.upper && 
-    checks.number && 
-    checks.special && 
-    userData.name && 
+  const isFormValid =
+    checks.length &&
+    checks.upper &&
+    checks.number &&
+    checks.special &&
+    userData.name &&
     userData.email;
 
   const handleRegister = async (e) => {
     e.preventDefault();
     setLoading(true);
-    
+
     try {
-      console.log("Payload enviado para infraestrutura:", userData);
-      const response = await api.cadastro(userData);
-      
-      if (response.ok) {
-        alert("Utilizador registado no servidor com sucesso!");
-        navigate('/'); 
-      } else {
-        alert("Erro no servidor ao realizar cadastro. Verifique as políticas de segurança.");
-      }
+      console.log("Payload enviado:", userData);
+
+      // ✅ API já retorna direto ou lança erro
+      const result = await api.cadastro(userData);
+
+      alert("Utilizador registrado com sucesso!");
+      navigate('/');
+
     } catch (error) {
-      console.error("Erro de conexão com a VM:", error);
-      alert("Falha crítica de comunicação com a VM.");
+      // ✅ EXIBE ERRO REAL DO BACKEND
+      console.error("Erro no cadastro:", error.message);
+      alert(error.message);
+
     } finally {
       setLoading(false);
     }
@@ -62,7 +65,10 @@ export default function Cadastro() {
     <div className={styles.wrapper}>
       <div className={styles.card}>
         <h2 className={styles.title}>Novo Utilizador</h2>
+
         <form onSubmit={handleRegister}>
+
+          {/* Nome */}
           <div className={styles.field}>
             <label>Nome Completo</label>
             <input
@@ -75,6 +81,7 @@ export default function Cadastro() {
             />
           </div>
 
+          {/* Email */}
           <div className={styles.field}>
             <label>E-mail</label>
             <input
@@ -87,6 +94,7 @@ export default function Cadastro() {
             />
           </div>
 
+          {/* Senha */}
           <div className={styles.field}>
             <label>Senha</label>
             <input 
@@ -95,10 +103,10 @@ export default function Cadastro() {
               required 
               disabled={loading}
               value={userData.password}
-              onChange={e => setUserData({...userData, password: e.target.value})} 
+              onChange={e => setUserData({ ...userData, password: e.target.value })} 
             />
-            
-            {/* Checklist de Segurança Visual */}
+
+            {/* ✅ Checklist visual */}
             <div className={styles.policyBox}>
               <p className={checks.length ? styles.valid : styles.invalid}>
                 {checks.length ? '✔' : '✖'} Mínimo de 10 caracteres
@@ -110,23 +118,37 @@ export default function Cadastro() {
                 {checks.number ? '✔' : '✖'} Pelo menos um número
               </p>
               <p className={checks.special ? styles.valid : styles.invalid}>
-                {checks.special ? '✔' : '✖'} Pelo menos um caractere especial (!@#$)
+                {checks.special ? '✔' : '✖'} Pelo menos um caractere especial
               </p>
             </div>
+
           </div>
 
-          <button type="submit" className={styles.button} disabled={!isFormValid || loading}>
-            {loading ? 'Criptografando...' : 'Finalizar Registo'}
+          {/* Botão */}
+          <button 
+            type="submit" 
+            className={styles.button} 
+            disabled={!isFormValid || loading}
+          >
+            {loading ? 'Registrando...' : 'Finalizar Registo'}
           </button>
 
+          {/* Voltar */}
           <button 
             type="button" 
             onClick={() => navigate('/')} 
-            className={styles.button} 
-            style={{ backgroundColor: 'transparent', color: '#8b949e', marginTop: '10px', border: '1px solid #30363d' }}
+            className={styles.button}
+            style={{
+              backgroundColor: 'transparent',
+              color: '#8b949e',
+              marginTop: '10px',
+              border: '1px solid #30363d'
+            }}
+            disabled={loading}
           >
             Voltar ao Login
           </button>
+
         </form>
       </div>
     </div>
