@@ -72,6 +72,16 @@ export const api = {
       })
     ),
 
+  // ✅ AGENDAR BACKUP
+  agendarBackup: async (agendamentoData) =>
+    handleResponse(
+      await fetch(`${BASE_URL}/backup/schedule`, {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify(agendamentoData),
+      })
+    ),
+
   // ✅ RESTORE
   restoreSistema: async (fileName) =>
     handleResponse(
@@ -79,4 +89,8 @@ export const api = {
         method: "POST",
       })
     ),
+
+  // ✅ LISTAR BACKUPS DISPONÍVEIS
+  listarBackups: async () =>
+    handleResponse(await fetch(`${BASE_URL}/backup/list`)),
 };

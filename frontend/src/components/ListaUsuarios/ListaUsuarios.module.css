@@ -298,3 +298,83 @@ code {
   color: #c0392b;
   border-color: #f5c6cb;
 }
+
+/* 9. Modal de Restore - Lista de Backups */
+.backupListContainer {
+  max-height: 280px;
+  overflow-y: auto;
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+  padding: 4px 2px;
+}
+
+.backupListContainer::-webkit-scrollbar {
+  width: 6px;
+}
+
+.backupListContainer::-webkit-scrollbar-track {
+  background: #f8f5f2;
+  border-radius: 10px;
+}
+
+.backupListContainer::-webkit-scrollbar-thumb {
+  background: #d7ccc8;
+  border-radius: 10px;
+}
+
+.backupItem {
+  display: flex;
+  align-items: center;
+  gap: 14px;
+  padding: 14px 16px;
+  border: 2px solid #efebe9;
+  border-radius: 12px;
+  cursor: pointer;
+  transition: all 0.2s ease;
+  background: #fdfaf6;
+}
+
+.backupItem:hover {
+  border-color: #e67e22;
+  background: #fff8f0;
+  transform: translateX(4px);
+}
+
+.backupItemSelected {
+  border-color: #c0392b;
+  background: #fff5f5;
+  box-shadow: 0 2px 12px rgba(192, 57, 43, 0.1);
+}
+
+.backupIcon {
+  font-size: 1.4rem;
+  color: #d7ccc8;
+  flex-shrink: 0;
+  transition: color 0.2s;
+}
+
+.backupItemSelected .backupIcon {
+  color: #c0392b;
+}
+
+.backupInfo {
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+  min-width: 0;
+}
+
+.backupFileName {
+  font-weight: 600;
+  font-size: 0.85rem;
+  color: #3e2723;
+  word-break: break-all;
+  font-family: monospace;
+}
+
+.backupDate {
+  font-size: 0.75rem;
+  color: #8d6e63;
+  letter-spacing: 0.3px;
+}

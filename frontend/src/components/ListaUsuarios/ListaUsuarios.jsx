@@ -6,10 +6,17 @@ export default function ListaUsuarios() {
   // --- ESTADOS DO COMPONENTE ---
   const [usuarios, setUsuarios] = useState([]);
   const [loading, setLoading] = useState(true);
+  const [erro, setErro] = useState(null);
   
   // Controles de Visibilidade (Modais e Painéis)
   const [showAddModal, setShowAddModal] = useState(false);
   const [showSchedule, setShowSchedule] = useState(false);
+  const [showRestoreModal, setShowRestoreModal] = useState(false);
+
+  // Estado do modal de Restore
+  const [backupList, setBackupList] = useState([]);
+  const [selectedBackup, setSelectedBackup] = useState('');
+  const [loadingBackups, setLoadingBackups] = useState(false);
 
   // Dados de Formulário e Automação
   const [newUserData, setNewUserData] = useState({ name: '', email: '', password: '' });
@@ -21,23 +28,21 @@ export default function ListaUsuarios() {
   // --- 1. BUSCA DE DADOS (GET) ---
   const carregarUsuarios = async () => {
     setLoading(true);
+    setErro(null);
     try {
-      const response = await api.getUsuarios();
-      const data = await response.json();
+      // ✅ api.getUsuarios() já retorna o JSON parsed (via handleResponse)
+      const data = await api.getUsuarios();
       
       /**
-       * INSTRUÇÃO BACKEND (GET /usuarios):
-       * Retornar 'content' (Spring Pageable) ou Array de objetos {id, name, email}.
+       * Backend retorna Page (Spring Pageable) com campo 'content',
+       * ou um Array direto de objetos {id, name, email}.
        */
       const listaFinal = data.content || (Array.isArray(data) ? data : []);
       setUsuarios(listaFinal);
     } catch (error) {
-      console.error("Erro ao conectar com a VM:", error);
-      // Mock para manter a interface funcional no dev
-      setUsuarios([
-        { id: 1, name: 'Gerente ', email: 'gerente@restaurante.com' },
-        { id: 2, name: 'Chef de Cozinha ', email: 'chef@restaurante.com' },
-      ]);
+      console.error("Erro ao carregar usuários:", error);
+      setUsuarios([]);
+      setErro("Não foi possível carregar a lista: " + error.message);
     } finally {
       setLoading(false);
     }
@@ -52,15 +57,14 @@ export default function ListaUsuarios() {
   const handleAddUsuario = async (e) => {
     e.preventDefault();
     try {
-      const response = await api.cadastro(newUserData);
-      if (response.ok) {
-        alert("Novo membro da equipe registrado!");
-        setShowAddModal(false);
-        setNewUserData({ name: '', email: '', password: '' });
-        carregarUsuarios();
-      }
+      // ✅ api.cadastro() já retorna o dado parsed ou lança erro
+      await api.cadastro(newUserData);
+      alert("Novo membro da equipe registrado!");
+      setShowAddModal(false);
+      setNewUserData({ name: '', email: '', password: '' });
+      carregarUsuarios();
     } catch (error) {
-      alert("Erro ao salvar funcionário na VM.");
+      alert("Erro ao salvar funcionário: " + error.message);
     }
   };
 
@@ -81,8 +85,8 @@ export default function ListaUsuarios() {
   const handleBackup = async () => {
     if (window.confirm("Gerar arquivo SQL de backup agora?")) {
       try {
-        const response = await api.backupSistema();
-        const message = await response.text();
+        // ✅ api.backupSistema() já retorna string parsed (via handleResponse)
+        const message = await api.backupSistema();
         alert(message);
       } catch (error) {
         alert("Falha ao processar backup na VM.");
@@ -91,7 +95,7 @@ export default function ListaUsuarios() {
   };
 
   /**
-   * INSTRUÇÃO BACKEND (POST /system/schedule):
+   * INSTRUÇÃO BACKEND (POST /backup/schedule):
    * Recebe: { frequencia: string, horarioInicio: ISOString }
    * A VM deve agendar uma tarefa recorrente (ex: Crontab) baseada nesses dados.
    */
@@ -101,26 +105,49 @@ export default function ListaUsuarios() {
       return;
     }
     try {
-      const response = await api.agendarBackup(agendamentoData);
-      if (response.ok) {
-        alert(`Automação ativada! Próximo backup: ${new Date(agendamentoData.horarioInicio).toLocaleString()}`);
-        setShowSchedule(false);
-      }
+      // ✅ Converte a hora local para UTC (ISO) antes de enviar ao backend
+      const payload = {
+        ...agendamentoData,
+        horarioInicio: new Date(agendamentoData.horarioInicio).toISOString()
+      };
+      await api.agendarBackup(payload);
+      alert(`Automação ativada! Próximo backup: ${new Date(agendamentoData.horarioInicio).toLocaleString()}`);
+      setShowSchedule(false);
     } catch (error) {
-      alert("Erro ao configurar agendador na VM.");
+      alert("Erro ao configurar agendador: " + error.message);
     }
   };
 
-  const handleRestore = async () => {
-    const fileName = window.prompt("AÇÃO CRÍTICA: Digite o nome do arquivo .sql para restaurar:");
-    if (!fileName) return;
+  const handleOpenRestore = async () => {
+    setShowRestoreModal(true);
+    setLoadingBackups(true);
+    setSelectedBackup('');
     try {
-      const response = await api.restoreSistema(fileName);
-      const message = await response.text();
+      const list = await api.listarBackups();
+      setBackupList(Array.isArray(list) ? list : []);
+    } catch (error) {
+      console.error('Erro ao listar backups:', error);
+      setBackupList([]);
+    } finally {
+      setLoadingBackups(false);
+    }
+  };
+
+  const handleConfirmRestore = async () => {
+    if (!selectedBackup) {
+      alert('Selecione um arquivo de backup primeiro.');
+      return;
+    }
+    if (!window.confirm(`AÇÃO CRÍTICA: Confirma a restauração do backup "${selectedBackup}"?\n\nIsso vai sobrescrever os dados atuais.`)) {
+      return;
+    }
+    try {
+      const message = await api.restoreSistema(selectedBackup);
       alert(message);
+      setShowRestoreModal(false);
       carregarUsuarios();
     } catch (error) {
-      alert("Erro crítico durante a restauração.");
+      alert('Erro crítico durante a restauração: ' + error.message);
     }
   };
 
@@ -130,6 +157,14 @@ export default function ListaUsuarios() {
 
   return (
     <div className={styles.container}>
+      {/* MENSAGEM DE ERRO */}
+      {erro && (
+        <div style={{ background: '#fdeded', color: '#b71c1c', padding: '12px 20px', borderRadius: '8px', marginBottom: '16px', display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
+          <span>⚠️ {erro}</span>
+          <button onClick={carregarUsuarios} style={{ background: '#b71c1c', color: '#fff', border: 'none', padding: '6px 16px', borderRadius: '4px', cursor: 'pointer' }}>Tentar novamente</button>
+        </div>
+      )}
+
       <header className={styles.headerSection}>
         <div>
           <h1>Equipe Gran Buffet</h1>
@@ -140,7 +175,7 @@ export default function ListaUsuarios() {
           <button className={styles.btnAdd} onClick={() => setShowAddModal(true)}>+ Novo Staff</button>
           <button className={styles.btnBackup} onClick={() => setShowSchedule(!showSchedule)}>📅 Agendar</button>
           <button className={styles.btnBackup} onClick={handleBackup}>Backup SQL</button>
-          <button className={styles.btnRestore} onClick={handleRestore}>Restore</button>
+          <button className={styles.btnRestore} onClick={handleOpenRestore}>Restore</button>
         </div>
       </header>
 
@@ -209,6 +244,70 @@ export default function ListaUsuarios() {
           </tbody>
         </table>
       </div>
+
+      {/* MODAL DE RESTORE */}
+      {showRestoreModal && (
+        <div className={styles.modalOverlay}>
+          <div className={styles.modalContent}>
+            <h2>Restaurar Backup</h2>
+            <p>Selecione um dos arquivos SQL gerados pelo sistema.</p>
+
+            {loadingBackups ? (
+              <div style={{ textAlign: 'center', padding: '2rem', color: '#8d6e63' }}>
+                Carregando backups disponíveis...
+              </div>
+            ) : backupList.length === 0 ? (
+              <div style={{ textAlign: 'center', padding: '2rem', color: '#c0392b', background: '#fdeded', borderRadius: '10px' }}>
+                ⚠️ Nenhum arquivo de backup encontrado no servidor.
+              </div>
+            ) : (
+              <div className={styles.backupListContainer}>
+                {backupList.map((file) => (
+                  <label
+                    key={file}
+                    className={`${styles.backupItem} ${selectedBackup === file ? styles.backupItemSelected : ''}`}
+                  >
+                    <input
+                      type="radio"
+                      name="backupFile"
+                      value={file}
+                      checked={selectedBackup === file}
+                      onChange={() => setSelectedBackup(file)}
+                      style={{ display: 'none' }}
+                    />
+                    <span className={styles.backupIcon}>{selectedBackup === file ? '◉' : '○'}</span>
+                    <div className={styles.backupInfo}>
+                      <span className={styles.backupFileName}>{file}</span>
+                      <span className={styles.backupDate}>
+                        {(() => {
+                          const match = file.match(/backup_(\d{4})-(\d{2})-(\d{2})_(\d{2})-(\d{2})-(\d{2})\.sql/);
+                          if (match) {
+                            const [, ano, mes, dia, hora, min, seg] = match;
+                            return `${dia}/${mes}/${ano} às ${hora}:${min}:${seg}`;
+                          }
+                          return file;
+                        })()}
+                      </span>
+                    </div>
+                  </label>
+                ))}
+              </div>
+            )}
+
+            <div className={styles.modalActions}>
+              <button
+                className={styles.btnAdd}
+                onClick={handleConfirmRestore}
+                disabled={!selectedBackup}
+                style={!selectedBackup ? { opacity: 0.5, cursor: 'not-allowed' } : { background: '#c0392b' }}
+              >
+                🔄 Restaurar Selecionado
+              </button>
+              <button className={styles.btnCancel} onClick={() => setShowRestoreModal(false)}>Cancelar</button>
+            </div>
+          </div>
+        </div>
+      )}
 
       {/* MODAL ADICIONAR NOVO STAFF */}
       {showAddModal && (

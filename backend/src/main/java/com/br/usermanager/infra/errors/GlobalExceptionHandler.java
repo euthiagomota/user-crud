@@ -1,6 +1,7 @@
 package com.br.usermanager.infra.errors;
 
 import jakarta.servlet.http.HttpServletRequest;
+import com.br.usermanager.infra.logging.LogService;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.validation.FieldError;
@@ -15,6 +16,12 @@ import java.util.Map;
 
 @RestControllerAdvice
 public class GlobalExceptionHandler {
+
+    private final LogService logService;
+
+    public GlobalExceptionHandler(LogService logService) {
+        this.logService = logService;
+    }
 
     @ExceptionHandler(MethodArgumentNotValidException.class)
     public ResponseEntity<ApiErrorResponse> handleValidation(
@@ -52,6 +59,11 @@ public class GlobalExceptionHandler {
                 null
         );
 
+        // persist log
+        try {
+            logService.saveError(this.getClass().getName(), "handleMalformedJson", null, ex, request.getMethod(), request.getRequestURI(), null);
+        } catch (Exception ignored) {}
+
         return ResponseEntity.badRequest().body(body);
     }
 
@@ -68,6 +80,10 @@ public class GlobalExceptionHandler {
                 request.getRequestURI(),
                 null
         );
+
+        try {
+            logService.saveError(this.getClass().getName(), "handleBusiness", null, ex, request.getMethod(), request.getRequestURI(), null);
+        } catch (Exception ignored) {}
 
         return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(body);
     }
